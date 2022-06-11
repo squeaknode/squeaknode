@@ -1,4 +1,4 @@
-alembic==1.7.1
+alembic==1.8.0
 docutils==0.17.1
 Flask==2.0.1
 flask-cors==3.0.10
@@ -13,6 +13,6 @@ pyzmq==22.3.0
 requests[socks]==2.26.0
 SQLAlchemy==1.4.25
 squeaklib==0.13.1
-squeaknode-proto
+squeaknode-proto==0.1.6
 typed-config==0.2.5
 Werkzeug==2.0.3
