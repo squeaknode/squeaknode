@@ -24,9 +24,9 @@ import logging
 import os
 
 import grpc
+from squeaknode_proto.proto import lnd_pb2
+from squeaknode_proto.proto import lnd_pb2_grpc
 
-from proto import lnd_pb2
-from proto import lnd_pb2_grpc
 from squeaknode.core.exception import InvoiceSubscriptionError
 from squeaknode.lightning.info import Info
 from squeaknode.lightning.invoice import Invoice

@@ -36,10 +36,10 @@ from flask_login import login_required
 from flask_login import login_user
 from flask_login import LoginManager
 from flask_login import logout_user
+from squeaknode_proto.proto import lnd_pb2
+from squeaknode_proto.proto import squeak_admin_pb2
 from werkzeug.serving import make_server
 
-from proto import lnd_pb2
-from proto import squeak_admin_pb2
 from squeaknode.admin.webapp.forms import LoginForm
 from squeaknode.admin.webapp.user import User
 

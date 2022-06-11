@@ -24,8 +24,7 @@ import threading
 from concurrent import futures
 
 import grpc
-
-from proto import squeak_admin_pb2_grpc
+from squeaknode_proto.proto import squeak_admin_pb2_grpc
 
 logger = logging.getLogger(__name__)
 

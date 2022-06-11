@@ -20,8 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import pytest
+from squeaknode_proto.proto import squeak_admin_pb2
 
-from proto import squeak_admin_pb2
 from squeaknode.admin.messages import DEFAULT_PROFILE_IMAGE
 from squeaknode.admin.profile_image_util import bytes_to_base64_string
 

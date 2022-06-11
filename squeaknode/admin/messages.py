@@ -23,8 +23,8 @@ import logging
 from typing import Optional
 
 from squeak.core.keys import SqueakPublicKey
+from squeaknode_proto.proto import squeak_admin_pb2
 
-from proto import squeak_admin_pb2
 from squeaknode.admin.profile_image_util import bytes_to_base64_string
 from squeaknode.admin.profile_image_util import load_default_profile_image
 from squeaknode.core.download_result import DownloadResult

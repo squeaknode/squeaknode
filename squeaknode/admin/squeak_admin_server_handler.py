@@ -23,8 +23,8 @@ import logging
 
 from squeak.core.keys import SqueakPrivateKey
 from squeak.core.keys import SqueakPublicKey
+from squeaknode_proto.proto import squeak_admin_pb2
 
-from proto import squeak_admin_pb2
 from squeaknode.admin.messages import download_result_to_message
 from squeaknode.admin.messages import message_to_peer_address
 from squeaknode.admin.messages import message_to_received_payment
