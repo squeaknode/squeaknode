@@ -27,14 +27,13 @@ import threading
 import time
 from contextlib import contextmanager
 
+from proto import lnd_pb2
+from proto import squeak_admin_pb2
 from squeak.core.elliptic import scalar_difference
 from squeak.core.elliptic import scalar_from_bytes
 from squeak.core.elliptic import scalar_to_bytes
 from squeak.core.keys import SqueakPrivateKey
 from squeak.core.keys import SqueakPublicKey
-
-from proto import lnd_pb2
-from proto import squeak_admin_pb2
 
 
 def generate_private_key():

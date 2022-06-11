@@ -24,10 +24,10 @@ import uuid
 
 import grpc
 import pytest
-from squeak.params import SelectParams
-
 from proto import squeak_admin_pb2
 from proto import squeak_admin_pb2_grpc
+from squeak.params import SelectParams
+
 from tests.util import bytes_to_base64_string
 from tests.util import create_contact_profile
 from tests.util import create_saved_peer

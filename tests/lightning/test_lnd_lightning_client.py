@@ -21,8 +21,8 @@
 # SOFTWARE.
 import mock
 import pytest
+from squeaknode_proto.proto import lnd_pb2
 
-from proto import lnd_pb2
 from squeaknode.lightning.info import Info
 from squeaknode.lightning.invoice import Invoice
 from squeaknode.lightning.lnd_lightning_client import LNDLightningClient

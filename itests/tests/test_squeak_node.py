@@ -25,11 +25,11 @@ import datetime
 import time
 
 import pytest
+from proto import lnd_pb2 as ln
+from proto import squeak_admin_pb2
 from squeak.core import CheckSqueak
 from squeak.core import CSqueak
 
-from proto import lnd_pb2 as ln
-from proto import squeak_admin_pb2
 from tests.util import channel
 from tests.util import clear_sell_price
 from tests.util import create_contact_profile
