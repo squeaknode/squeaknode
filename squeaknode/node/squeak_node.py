@@ -228,7 +228,7 @@ class SqueakNode:
     def create_peer_web_server(self):
         self.peer_web_server = SqueakPeerWebServer(
             self.config.server.host,
-            squeak.params.params.DEFAULT_PORT,
+            self.config.server.port or squeak.params.params.DEFAULT_PORT,
             self.peer_handler,
         )
 
