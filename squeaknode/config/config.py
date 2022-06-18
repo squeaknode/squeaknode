@@ -106,7 +106,7 @@ class TorConfig(Config):
 class ServerConfig(Config):
     enabled = key(cast=bool, required=False, default=True)
     host = key(cast=str, required=False, default=DEFAULT_SERVER_RPC_HOST)
-    port = key(cast=int, required=False, default=DEFAULT_SERVER_RPC_PORT)
+    port = key(cast=int, required=False, default=0)
     external_address = key(cast=str, required=False, default="")
     external_port = key(cast=int, required=False,
                         default=DEFAULT_EXTERNAL_PORT)
