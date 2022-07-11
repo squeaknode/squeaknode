@@ -134,7 +134,7 @@ const Peers = (props) => {
           <CopyToClipboard
             text={externalAddress && `${getExternalAddressStr()}`}
             >
-            <a data-tip="Copy host">
+            <a data-tip="Copy address">
               <button fullWidth={false}>
                 <ICON_CLIPBOARD />
               </button>
