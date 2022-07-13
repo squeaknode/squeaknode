@@ -12,7 +12,7 @@
     "google-protobuf": "^3.12.4",
     "informed": "^4.6.1",
     "jwt-decode": "^2.2.0",
-    "moment": "^2.29.2",
+    "moment": "^2.29.4",
     "react": "^16.13.1",
     "react-contenteditable": "^3.3.4",
     "react-copy-to-clipboard": "^5.1.0",
