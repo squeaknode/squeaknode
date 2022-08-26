@@ -97,8 +97,6 @@ class SqueakController:
         )
 
     def pay_offer(self, received_offer_id: int) -> int:
-        import time
-        time.sleep(10)
         return self.squeak_store.pay_offer(received_offer_id)
 
     def get_packaged_offer(
