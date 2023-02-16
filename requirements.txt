@@ -16,4 +16,4 @@ requests[socks]==2.26.0
 SQLAlchemy==1.4.25
 squeaklib==0.13.1
 typed-config==0.2.5
-Werkzeug==2.0.3
+Werkzeug==2.2.3
